@@ -1,9 +1,7 @@
 {
   "name": "lottie-view",
   "version": "0.0.0",
-  "scripts": {
-    "start": "http-server dist/lottie-view"
-  },
+  "scripts": {},
   "private": true,
   "dependencies": {
     "http-server": "^0.11.1"
