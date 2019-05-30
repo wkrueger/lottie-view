@@ -1,31 +1,72 @@
-import { Component } from '@angular/core';
+import { Component } from "@angular/core";
+import { FormControl } from "@angular/forms";
+import { LottieAnimation } from "lottie-web";
 
 @Component({
-  selector: 'app-root',
+  selector: "app-root",
   template: `
-    <!--The content below is only a placeholder and can be replaced.-->
-    <div style="text-align:center">
-      <h1>
-        Welcome to {{title}}!
-      </h1>
-      <img width="300" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNTAgMjUwIj4KICAgIDxwYXRoIGZpbGw9IiNERDAwMzEiIGQ9Ik0xMjUgMzBMMzEuOSA2My4ybDE0LjIgMTIzLjFMMTI1IDIzMGw3OC45LTQzLjcgMTQuMi0xMjMuMXoiIC8+CiAgICA8cGF0aCBmaWxsPSIjQzMwMDJGIiBkPSJNMTI1IDMwdjIyLjItLjFWMjMwbDc4LjktNDMuNyAxNC4yLTEyMy4xTDEyNSAzMHoiIC8+CiAgICA8cGF0aCAgZmlsbD0iI0ZGRkZGRiIgZD0iTTEyNSA1Mi4xTDY2LjggMTgyLjZoMjEuN2wxMS43LTI5LjJoNDkuNGwxMS43IDI5LjJIMTgzTDEyNSA1Mi4xem0xNyA4My4zaC0zNGwxNy00MC45IDE3IDQwLjl6IiAvPgogIDwvc3ZnPg==">
+    <h1>app-lottie</h1>
+    <input type="file" (change)="loadFile($event)" />
+
+    <div style="max-width: 300px;">
+      <app-lottie
+        *ngIf="loaded"
+        [animationData]="animationData"
+        (onMount)="onAnimationMount($event)"
+      ></app-lottie>
     </div>
-    <h2>Here are some links to help you start: </h2>
-    <ul>
-      <li>
-        <h2><a target="_blank" rel="noopener" href="https://angular.io/tutorial">Tour of Heroes</a></h2>
-      </li>
-      <li>
-        <h2><a target="_blank" rel="noopener" href="https://angular.io/cli">CLI Documentation</a></h2>
-      </li>
-      <li>
-        <h2><a target="_blank" rel="noopener" href="https://blog.angular.io/">Angular blog</a></h2>
-      </li>
-    </ul>
-    
+    <div class="controls">
+      <ngl-slider
+        [value]="current.value"
+        (valueChange)="valueChange($event)"
+        min="0"
+        [max]="max.value"
+      ></ngl-slider>
+      <ngl-input label="Current">
+        <input ngl type="text" [formControl]="current"
+      /></ngl-input>
+      <ngl-input label="Max">
+        <input ngl type="text" [formControl]="max"
+      /></ngl-input>
+    </div>
   `,
   styles: []
 })
 export class AppComponent {
-  title = 'lottie-view';
+  loaded = false;
+  animationData: any;
+  current = new FormControl(0);
+  max = new FormControl(70);
+
+  loadFile(ev) {
+    this.loaded = false;
+    const file = ev.target.files[0];
+    const reader = new FileReader();
+    reader.onload = (readEv: any) => {
+      const resultText = readEv.target.result;
+      const parsed = JSON.parse(resultText);
+      this.animationData = parsed;
+      this.loaded = true;
+    };
+    reader.readAsText(file);
+  }
+
+  valueChange(ev: number) {
+    this.current.setValue(ev);
+  }
+
+  formSub = this.current.valueChanges.subscribe(value => {
+    if (!this.animation) return;
+    //this.animation.playSegments([value, value + 1], true)
+    this.animation.goToAndStop(value, true);
+  });
+
+  animation!: LottieAnimation;
+  onAnimationMount(animation: LottieAnimation) {
+    this.animation = animation;
+  }
+
+  ngOnDestroy() {
+    this.formSub.unsubscribe();
+  }
 }
