@@ -6,6 +6,7 @@
 # Only exists if Bazel was run
 /bazel-out
 /animations/**
+/bin/**
 
 # dependencies
 /node_modules
