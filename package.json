@@ -1,10 +1,13 @@
 {
   "name": "lottie-view",
   "version": "0.0.0",
-  "scripts": {},
+  "scripts": {
+    "build": "pkg package.json --out-path=bin"
+  },
   "private": true,
   "dependencies": {
-    "http-server": "^0.11.1"
+    "cors": "^2.8.5",
+    "express": "^4.17.1"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~0.13.0",
@@ -25,11 +28,16 @@
     "core-js": "^2.5.4",
     "lottie-web": "^5.5.4",
     "ng-lightning": "^4.5.2",
+    "pkg": "^4.4.0",
     "rxjs": "~6.3.3",
     "ts-node": "~7.0.0",
     "tslib": "^1.9.0",
     "tslint": "~5.11.0",
     "typescript": "~3.2.2",
     "zone.js": "~0.8.26"
+  },
+  "bin": "server/lottie-view.js",
+  "pkg": {
+    "assets": "dist/**/*"
   }
 }
